@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "PSP",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${env:PSPDEV}/psp/include",
+                "${env:PSPDEV}/psp/sdk/include"
+            ],
+            "defines": [
+                "PSP",
+                "_PSP_FW_VERSION=600"
+            ],
+            "compilerPath": "${env:PSPDEV}/bin/psp-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "intelliSenseMode": "gcc-arm"
+        }
+    ],
+    "version": 4
+}
