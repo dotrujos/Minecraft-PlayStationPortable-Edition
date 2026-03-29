@@ -1,4 +1,5 @@
 # Minecraft PSP Port — Makefile (CMake wrapper)
+# Targets: PSP >= 2000
 
 BUILD_DIR = build
 JOBS     ?= $(shell nproc 2>/dev/null || echo 4)
@@ -13,9 +14,10 @@ build:
 
 clean:
 	rm -rf $(BUILD_DIR)
+	find src -name "*.o" -type f -delete
 
 help:
 	@echo "Targets:"
 	@echo "  make build   → create build/, configure with CMake and compile the project"
-	@echo "  make clean   → remove the build/ directory"
+	@echo "  make clean   → remove the build/ directory and all *.o files in src/"
 	@echo "  make help    → display this message"
