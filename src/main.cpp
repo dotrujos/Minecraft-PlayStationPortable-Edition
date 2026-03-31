@@ -71,6 +71,13 @@ static TextureAtlas *g_atlas = nullptr;
 static RayHit g_hitResult;       // Block the player is currently looking at
 static uint8_t g_heldBlock = BLOCK_COBBLESTONE; // Block to place
 
+static const uint8_t PLACEABLE[] = {
+    BLOCK_GRASS, BLOCK_DIRT, BLOCK_STONE, BLOCK_COBBLESTONE,
+    BLOCK_WOOD_PLANK, BLOCK_LOG, BLOCK_LEAVES, BLOCK_GLASS, BLOCK_SAND
+};
+static const int NUM_PLACEABLE = 9;
+static int g_placeIdx = 0; // start at grass
+
 // Initialization
 static bool game_init() {
   // Overclock PSP to max for performance
@@ -95,6 +102,8 @@ static bool game_init() {
   g_skyRenderer = new SkyRenderer(g_level);
   g_cloudRenderer = new CloudRenderer(g_level);
   g_guiRenderer = new GUIRenderer();
+  
+  g_heldBlock = PLACEABLE[g_placeIdx];
 
   // Init chunk renderer
   g_chunkRenderer = new ChunkRenderer(g_atlas);
@@ -394,25 +403,13 @@ static void game_update(float dt) {
   }
 
   // Cycle hotbar
-  static const uint8_t PLACEABLE[] = {
-    BLOCK_STONE, BLOCK_GRASS, BLOCK_DIRT, BLOCK_COBBLESTONE,
-    BLOCK_WOOD_PLANK, BLOCK_SAND, BLOCK_GRAVEL, BLOCK_LOG,
-    BLOCK_LEAVES, BLOCK_GLASS, BLOCK_SANDSTONE, BLOCK_WOOL,
-    BLOCK_GOLD_BLOCK, BLOCK_IRON_BLOCK, BLOCK_BRICK,
-    BLOCK_BOOKSHELF, BLOCK_MOSSY_COBBLE, BLOCK_OBSIDIAN,
-    BLOCK_GLOWSTONE, BLOCK_PUMPKIN,
-    BLOCK_FLOWER, BLOCK_ROSE, BLOCK_SAPLING, BLOCK_TALLGRASS
-  };
-  static const int NUM_PLACEABLE = sizeof(PLACEABLE) / sizeof(PLACEABLE[0]);
-  static int placeIdx = 3; // start at cobblestone
-
   if (PSPInput_JustPressed(PSP_CTRL_RIGHT)) {
-    placeIdx = (placeIdx + 1) % NUM_PLACEABLE;
-    g_heldBlock = PLACEABLE[placeIdx];
+    g_placeIdx = (g_placeIdx + 1) % NUM_PLACEABLE;
+    g_heldBlock = PLACEABLE[g_placeIdx];
   }
   if (PSPInput_JustPressed(PSP_CTRL_LEFT)) {
-    placeIdx = (placeIdx - 1 + NUM_PLACEABLE) % NUM_PLACEABLE;
-    g_heldBlock = PLACEABLE[placeIdx];
+    g_placeIdx = (g_placeIdx - 1 + NUM_PLACEABLE) % NUM_PLACEABLE;
+    g_heldBlock = PLACEABLE[g_placeIdx];
   }
 }
 
@@ -478,8 +475,9 @@ static void game_render() {
   if (g_cloudRenderer)
     g_cloudRenderer->renderClouds(g_player.x, g_player.y, g_player.z, 0.0f);
 
-  if (g_guiRenderer)
-    g_guiRenderer->render(480, 272);
+  if (g_guiRenderer) {
+    g_guiRenderer->render(480, 272, g_heldBlock, PLACEABLE, 9, g_placeIdx);
+  }
 
   PSPRenderer_EndFrame();
 }
