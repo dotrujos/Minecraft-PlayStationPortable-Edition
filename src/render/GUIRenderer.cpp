@@ -26,13 +26,6 @@ void GUIRenderer::drawBlockIcon(float x, float y, float size, uint8_t bid) {
   float s = size * 0.5f;        // Half width
   float h = s * 0.5f;           // Diamond vertical radius
   float sideHeight = s * 1.1f;  // Make sides taller to avoid "slab" look
-
-  // To center the icon vertically, we need to know its total height
-  // Total height = h (top half diamond) + h (bottom half diamond) + sideHeight
-  // But wait, the center "y" I'll use is the center of the middle horizontal axis.
-  // The icon goes from (y - h) to (y + h + sideHeight).
-  // Its visual center is at y + (sideHeight / 2). 
-  // So we offset y by -sideHeight/2 to align the visual center with the slot center.
   y -= (sideHeight * 0.4f); 
 
   // Top Face (Diamond) - Brightest
@@ -127,14 +120,16 @@ void GUIRenderer::render(int screenWidth, int screenHeight, uint8_t heldBlock, c
     float hbX = (screenWidth - hbW) / 2.0f;
     float hbY = screenHeight - hbH - 30.0f; 
     
-    drawTexturedRect(hbX, hbY, hbW, hbH, 0, 0, 182.0f / 256.0f, 22.0f / 256.0f, 0xFFFFFFFF, m_guiTex);
+    uint32_t guiColor = 0xC0FFFFFF; // 75% opacity
+
+    drawTexturedRect(hbX, hbY, hbW, hbH, 0, 0, 182.0f / 256.0f, 22.0f / 256.0f, guiColor, m_guiTex);
     
     int localIdx = selectedIndex % 9; 
     
     float selSize = 24.0f * scale;
     float selX = hbX - (1.0f * scale) + localIdx * (20.0f * scale);
     float selY = hbY - (1.0f * scale);
-    drawTexturedRect(selX, selY, selSize, selSize, 0, 22.0f / 256.0f, 24.0f / 256.0f, (22.0f + 24.0f) / 256.0f, 0xFFFFFFFF, m_guiTex);
+    drawTexturedRect(selX, selY, selSize, selSize, 0, 22.0f / 256.0f, 24.0f / 256.0f, (22.0f + 24.0f) / 256.0f, guiColor, m_guiTex);
 
     // Hotbar Items
     if (m_terrainTex.data && hotbarItems) {
