@@ -13,6 +13,7 @@
 #include "render/BlockHighlight.h"
 #include "render/ChunkRenderer.h"
 #include "render/CloudRenderer.h"
+#include "render/GUIRenderer.h"
 #include "world/Level.h"
 #include "world/AABB.h"
 #include "render/PSPRenderer.h"
@@ -65,6 +66,7 @@ static Level *g_level = nullptr;
 static SkyRenderer *g_skyRenderer = nullptr;
 static CloudRenderer *g_cloudRenderer = nullptr;
 static ChunkRenderer *g_chunkRenderer = nullptr;
+static GUIRenderer *g_guiRenderer = nullptr;
 static TextureAtlas *g_atlas = nullptr;
 static RayHit g_hitResult;       // Block the player is currently looking at
 static uint8_t g_heldBlock = BLOCK_COBBLESTONE; // Block to place
@@ -92,6 +94,7 @@ static bool game_init() {
   g_level = new Level();
   g_skyRenderer = new SkyRenderer(g_level);
   g_cloudRenderer = new CloudRenderer(g_level);
+  g_guiRenderer = new GUIRenderer();
 
   // Init chunk renderer
   g_chunkRenderer = new ChunkRenderer(g_atlas);
@@ -475,7 +478,8 @@ static void game_render() {
   if (g_cloudRenderer)
     g_cloudRenderer->renderClouds(g_player.x, g_player.y, g_player.z, 0.0f);
 
-  // TODO: HUD (hotbar, crosshair)
+  if (g_guiRenderer)
+    g_guiRenderer->render(480, 272);
 
   PSPRenderer_EndFrame();
 }
